@@ -1,0 +1,62 @@
+/* src/App.css */
+
+.app-container {
+  font-family: Arial, sans-serif;
+}
+
+.navbar {
+  background-color: #333;
+  padding: 10px;
+}
+
+.navbar ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar li {
+  margin: 0 20px;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+.page-content {
+  padding: 20px;
+}
+
+.streamlist-container {
+  text-align: center;
+}
+
+.streamlist-container input {
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid #ccc;
+}
+
+.streamlist-container button {
+  padding: 10px 20px;
+  background-color: #333;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.streamlist-container button:hover {
+  background-color: #555;
+}
+
+.page-container {
+  text-align: center;
+  font-size: 18px;
+}
