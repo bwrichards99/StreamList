@@ -1,13 +1,14 @@
 // src/components/Cart.js
-import React from "react";
+import React from 'react';
 
-const Cart = () => {
+function Cart() {
   return (
-    <div className="page-container">
-      <h2>Cart Page</h2>
-      <p>Come Back Soon</p>
+    <div>
+      <h1>Cart Page</h1>
+      <p>This page will be available in Week 4.</p>
     </div>
   );
-};
+}
 
 export default Cart;
+

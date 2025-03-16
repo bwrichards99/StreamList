@@ -1,13 +1,13 @@
 // src/components/Movies.js
-import React from "react";
+import React from 'react';
 
-const Movies = () => {
+function Movies() {
   return (
-    <div className="page-container">
-      <h2>Movies Page</h2>
-      <p>Come Back Soon</p>
+    <div>
+      <h1>Movies Page</h1>
+      <p>This page will be available in Week 4.</p>
     </div>
   );
-};
+}
 
 export default Movies;

@@ -1,13 +1,13 @@
 // src/components/About.js
-import React from "react";
+import React from 'react';
 
-const About = () => {
+function About() {
   return (
-    <div className="page-container">
-      <h2>About Page</h2>
-      <p>Come Back Soon</p>
+    <div>
+      <h1>About Page</h1>
+      <p>This page will be available in Week 5.</p>
     </div>
   );
-};
+}
 
 export default About;

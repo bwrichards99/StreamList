@@ -1,62 +1,84 @@
 /* src/App.css */
-
-.app-container {
-  font-family: Arial, sans-serif;
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f0f4f8;
+  margin: 0;
+  padding: 0;
 }
 
-.navbar {
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+nav {
   background-color: #333;
   padding: 10px;
+  width: 100%;
+  text-align: center;
 }
 
-.navbar ul {
+nav ul {
   list-style-type: none;
   padding: 0;
-  display: flex;
-  justify-content: center;
 }
 
-.navbar li {
+nav ul li {
+  display: inline;
   margin: 0 20px;
 }
 
-.navbar a {
+nav ul li a {
   color: white;
   text-decoration: none;
   font-size: 18px;
 }
 
-.navbar a:hover {
-  text-decoration: underline;
+h1 {
+  color: #333;
 }
 
-.page-content {
-  padding: 20px;
-}
-
-.streamlist-container {
-  text-align: center;
-}
-
-.streamlist-container input {
+input {
   padding: 10px;
-  margin: 10px;
-  border: 1px solid #ccc;
+  font-size: 16px;
+  margin-right: 10px;
 }
 
-.streamlist-container button {
-  padding: 10px 20px;
-  background-color: #333;
+button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #4caf50;
   color: white;
   border: none;
   cursor: pointer;
+  margin: 5px;
 }
 
-.streamlist-container button:hover {
-  background-color: #555;
+button:hover {
+  background-color: #45a049;
 }
 
-.page-container {
-  text-align: center;
-  font-size: 18px;
+button i {
+  margin-right: 5px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+}
+
+li span {
+  flex-grow: 1;
+}
+
+li button {
+  margin: 0 5px;
 }
