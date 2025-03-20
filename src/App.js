@@ -1,25 +1,30 @@
-// src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import StreamList from './components/StreamList';
-import Movies from './components/Movies';
-import Cart from './components/Cart';
-import About from './components/About';
-import Navbar from './components/Navbar';
-import './App.css';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import StreamList from "./pages/StreamList";
+import Movies from "./pages/Movies";
+import Cart from "./pages/Cart";
+import About from "./pages/About";
+import Subscriptions from "./pages/Subscriptions";
+import list from "./data"; // 
 
 function App() {
+  const [cart, setCart] = useState([]);
+
+  const addToCart = (item) => {
+    setCart([...cart, item]);
+  };
+
   return (
     <Router>
-      <div className="App">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<StreamList />} />
-          <Route path="/movies" element={<Movies />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-      </div>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<StreamList />} />
+        <Route path="/movies" element={<Movies />} />
+        <Route path="/cart" element={<Cart cart={cart} />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/subscriptions" element={<Subscriptions addToCart={addToCart} />} />
+      </Routes>
     </Router>
   );
 }
