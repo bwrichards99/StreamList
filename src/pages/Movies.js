@@ -1,90 +1,92 @@
 import React, { useState, useEffect } from "react";
 
-const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
+const Movies = () => {
+  const [movies, setMovies] = useState([]);
+  const [query, setQuery] = useState(""); // For search input
+  const [page, setPage] = useState(1); // Track current page
+  const [totalPages, setTotalPages] = useState(1); // Track total pages
 
-function Movies() {
-  const [movies, setMovies] = useState([]); // Holds the list of movies
-  const [searchQuery, setSearchQuery] = useState(""); // Holds the search input
-  const [loading, setLoading] = useState(false); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
 
-  // Fetch movies based on search query or default popular movies
-  const fetchMovies = (query) => {
-    setLoading(true);
-    setError(null);
+  useEffect(() => {
+    if (query) {
+      fetchMovies(query, page);
+    }
+  }, [query, page]); // Fetch data when query or page changes
 
-    const url = query
-      ? `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`
-      : `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=1`;
+  const fetchMovies = async (searchQuery, pageNumber) => {
+    try {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${searchQuery}&page=${pageNumber}`
+      );
+      const data = await response.json();
 
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.results) {
-          setMovies(data.results);
-        } else {
-          setMovies([]);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching movies:", error);
-        setError("Failed to load movies.");
-        setLoading(false);
-      });
+      if (data.results) {
+        setMovies(data.results);
+        setTotalPages(data.total_pages); // Update total pages
+      } else {
+        setMovies([]);
+      }
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+    }
   };
 
-  // Fetch popular movies when the page loads
-  useEffect(() => {
-    fetchMovies("");
-  }, []);
-
-  // Handle search submission
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      fetchMovies(searchQuery);
-    }
+    setPage(1); // Reset to first page on new search
+    fetchMovies(query, 1);
   };
 
   return (
     <div>
-      <h1>Movie Search</h1>
-
-      {/* Search Form */}
+      <h1>Search Movies</h1>
       <form onSubmit={handleSearch}>
         <input
           type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           placeholder="Search for a movie..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
         />
         <button type="submit">Search</button>
       </form>
 
-      {loading && <p>Loading movies...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <ul>
-        {movies.length > 0 ? (
-          movies.map((movie) => (
-            <li key={movie.id}>
-              <h2>{movie.title}</h2>
-              {movie.poster_path && (
+      {movies.length === 0 ? (
+        <p>No movies found.</p>
+      ) : (
+        <div>
+          <ul>
+            {movies.map((movie) => (
+              <li key={movie.id}>
+                <h3>{movie.title}</h3>
                 <img
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
                   alt={movie.title}
                 />
-              )}
-              <p>{movie.overview}</p>
-            </li>
-          ))
-        ) : (
-          !loading && <p>No movies found.</p>
-        )}
-      </ul>
+              </li>
+            ))}
+          </ul>
+
+          {/* Pagination Controls */}
+          <div>
+            <button
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              disabled={page === 1}
+            >
+              Previous
+            </button>
+            <span> Page {page} of {totalPages} </span>
+            <button
+              onClick={() => setPage((prev) => (prev < totalPages ? prev + 1 : prev))}
+              disabled={page >= totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default Movies;
