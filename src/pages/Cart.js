@@ -19,9 +19,10 @@ function Cart() {
 
     // Remove item from cart
     const handleRemove = useCallback((itemToRemove) => {
-        const updatedCart = cartItems.filter(item =>
-            (item.name || item.service) !== (itemToRemove.name || itemToRemove.service)
-        );
+        const updatedCart = cartItems.filter(item => {
+            // Compare items based on a unique identifier (e.g., id)
+            return item.id !== itemToRemove.id;
+        });
         updateLocalStorage(updatedCart);
         setCartItems(updatedCart); // Update cart state
     }, [cartItems, updateLocalStorage]);

@@ -1,28 +1,50 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 
 function StreamList() {
-    const [input, setInput] = useState('');
-    const [price, setPrice] = useState('');
+    const [itemName, setItemName] = useState('');
+    const [itemPrice, setItemPrice] = useState('');
     const [streamList, setStreamList] = useState([]);
-    const [error, setError] = useState('');
+    const [itemNameError, setItemNameError] = useState('');
+    const [itemPriceError, setItemPriceError] = useState('');
+    const itemNameInputRef = useRef(null);
 
-    const handleAdd = useCallback(() => {
-        if (!input.trim() || !price.trim()) {
-            setError('Please enter both item name and price.');
+    const validateInputs = () => {
+        let isValid = true;
+        if (!itemName.trim()) {
+            setItemNameError('Please enter an item name.');
+            isValid = false;
+        } else {
+            setItemNameError('');
+        }
+
+        if (!itemPrice.trim()) {
+            setItemPriceError('Please enter a price.');
+            isValid = false;
+        } else if (isNaN(parseFloat(itemPrice))) {
+            setItemPriceError('Please enter a valid number for the price.');
+            isValid = false;
+        } else {
+            setItemPriceError('');
+        }
+        return isValid;
+    };
+
+    const handleAddItem = useCallback(() => {
+        if (!validateInputs()) {
             return;
         }
 
-        const parsedPrice = parseFloat(price);
-        if (isNaN(parsedPrice)) {
-            setError('Please enter a valid price.');
-            return;
+        setStreamList(prevStreamList => [...prevStreamList, { name: itemName, price: parseFloat(itemPrice) }]);
+        setItemName('');
+        setItemPrice('');
+        setItemNameError('');
+        setItemPriceError('');
+
+        if (itemNameInputRef.current) {
+            itemNameInputRef.current.focus();
         }
 
-        setStreamList(prevStreamList => [...prevStreamList, { name: input, price: parsedPrice }]);
-        setInput('');
-        setPrice('');
-        setError(''); // Clear any previous errors
-    }, [input, price, setStreamList]);
+    }, [itemName, itemPrice, setStreamList]);
 
     const handleAddToCart = useCallback((item) => {
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -31,27 +53,44 @@ function StreamList() {
         alert(`${item.name} added to cart!`);
     }, []);
 
+    const clearItemNameError = () => {
+        setItemNameError('');
+    };
+
+    const clearItemPriceError = () => {
+        setItemPriceError('');
+    };
+
     return (
         <div>
             <h1>StreamList</h1>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+
             <label htmlFor="item-name">Item Name:</label>
             <input
                 type="text"
                 id="item-name"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
+                value={itemName}
+                onChange={(e) => setItemName(e.target.value)}
                 placeholder="Enter item name"
+                aria-invalid={!!itemNameError}
+                onFocus={clearItemNameError}
+                ref={itemNameInputRef}
             />
+            {itemNameError && <p style={{ color: 'red' }}>{itemNameError}</p>}
+
             <label htmlFor="item-price">Item Price:</label>
             <input
                 type="number"
                 id="item-price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                value={itemPrice}
+                onChange={(e) => setItemPrice(e.target.value)}
                 placeholder="Enter price"
+                aria-invalid={!!itemPriceError}
+                onFocus={clearItemPriceError}
             />
-            <button onClick={handleAdd} disabled={!input.trim() || !price.trim()}>Add Item</button>
+            {itemPriceError && <p style={{ color: 'red' }}>{itemPriceError}</p>}
+
+            <button onClick={handleAddItem} disabled={!itemName.trim() || !itemPrice.trim()}>Add Item</button>
 
             <h2>Custom Items</h2>
             <ul>
