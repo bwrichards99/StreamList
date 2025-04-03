@@ -1,62 +1,70 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from "react";
+import { Container, Typography, Button, IconButton } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete"; // Import a delete icon
 
 function Cart() {
-    const [cartItems, setCartItems] = useState([]);
+  const [cart, setCart] = useState([]);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        setCartItems(cart); // Load cart from localStorage
-    }, []);
+  // Load the cart from localStorage when the component mounts
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(storedCart);
+  }, []);
 
-    const updateLocalStorage = useCallback((updatedCart) => {
-        try {
-            localStorage.setItem('cart', JSON.stringify(updatedCart));
-        } catch (error) {
-            console.error('Error updating local storage:', error);
-            // Handle the error appropriately, e.g., display an error message to the user
-        }
-    }, []);
+  // Handle removing an item from the cart
+  const handleRemoveItem = (itemToRemove) => {
+    const updatedCart = cart.filter(item => item.id !== itemToRemove.id); // Remove the item by id
+    setCart(updatedCart); // Update state
+    localStorage.setItem("cart", JSON.stringify(updatedCart)); // Update localStorage
+  };
 
-    // Remove item from cart
-    const handleRemove = useCallback((itemToRemove) => {
-        const updatedCart = cartItems.filter(item => {
-            // Compare items based on a unique identifier (e.g., id)
-            return item.id !== itemToRemove.id;
-        });
-        updateLocalStorage(updatedCart);
-        setCartItems(updatedCart); // Update cart state
-    }, [cartItems, updateLocalStorage]);
+  // Calculate the total price of the cart
+  const totalPrice = cart.reduce((total, item) => total + item.price, 0);
 
-    // Calculate total price
-    const calculateTotal = useCallback(() => {
-        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-    }, [cartItems]);
-
-    return (
+  return (
+    <Container maxWidth="md">
+      <Typography variant="h4" gutterBottom>
+        Shopping Cart
+      </Typography>
+      {cart.length === 0 ? (
+        <Typography variant="h6">Your cart is empty.</Typography>
+      ) : (
         <div>
-            <h1>Cart</h1>
-
-            {/* Display all items in cart */}
-            <h2>Items in Cart</h2>
-            <ul>
-                {cartItems.length > 0 ? (
-                    cartItems.map((item, index) => (
-                        <li key={index}>
-                            <span>{item.name || item.service} - ${item.price.toFixed(2)} x {item.quantity}</span>
-                            <button onClick={() => handleRemove(item)}>Remove</button>
-                        </li>
-                    ))
-                ) : (
-                    <p>Your cart is empty.</p>
-                )}
-            </ul>
-
-            <div>
-                <h3>Total: ${calculateTotal().toFixed(2)}</h3>
-                <button onClick={() => alert('Proceeding to checkout!')}>Checkout</button>
-            </div>
+          <h2>Your Cart</h2>
+          <ul>
+            {cart.map((item, index) => (
+              <li key={index}>
+                {item.name} - ${item.price}
+                <IconButton
+                  color="secondary"
+                  onClick={() => handleRemoveItem(item)} // Remove item on click
+                >
+                  <DeleteIcon /> {/* Delete icon */}
+                </IconButton>
+              </li>
+            ))}
+          </ul>
+          {/* Display total price */}
+          <Typography variant="h6" gutterBottom>
+            Total: ${totalPrice.toFixed(2)}
+          </Typography>
         </div>
-    );
+      )}
+      <Button 
+        variant="contained" 
+        color="primary" 
+        onClick={() => navigate("/credit-card")} 
+        disabled={cart.length === 0}
+      >
+        Proceed to Checkout
+      </Button>
+    </Container>
+  );
 }
 
 export default Cart;
+
+
+

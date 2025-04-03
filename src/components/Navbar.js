@@ -1,20 +1,39 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import "./Navbar.css"; 
+import { AppBar, Toolbar, Typography, Button } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
 
-const Navbar = () => {
+function Navbar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("userToken");
+    navigate("/login");
+  };
+
   return (
-    <nav className="navbar">
-      <h2>StreamList</h2>
-      <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/movies">Movies</Link></li>
-        <li><Link to="/cart">Cart</Link></li>
-        <li><Link to="/about">About</Link></li>
-        <li><Link to="/subscriptions">Subscriptions</Link></li>
-      </ul>
-    </nav>
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          StreamList
+        </Typography>
+        <Button color="inherit" component={Link} to="/">
+          Home
+        </Button>
+        <Button color="inherit" component={Link} to="/movies">
+          Movies
+        </Button>
+        <Button color="inherit" component={Link} to="/cart">
+          Cart
+        </Button>
+        <Button color="inherit" component={Link} to="/subscriptions">
+          Subscriptions
+        </Button>
+        <Button color="inherit" onClick={handleLogout}>
+          Logout
+        </Button>
+      </Toolbar>
+    </AppBar>
   );
-};
+}
 
 export default Navbar;
